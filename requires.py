@@ -208,3 +208,29 @@ class OpenStackIntegrationRequires(Endpoint):
         Will be `True` or `False`.
         """
         return self._received['manage_security_groups'] or False
+
+    @property
+    def bs_version(self):
+        """
+        What block storage API version to use, `auto` if autodetection is
+        desired, or `None` to use the default.
+        """
+        return self._received['bs_version']
+
+    @property
+    def trust_device_path(self):
+        """
+        Whether to trust the block device name provided by Ceph.
+
+        Will be `True`, `False`, or `None`.
+        """
+        return self._received['trust_device_path']
+
+    @property
+    def ignore_volume_az(self):
+        """
+        Whether to ignore availability zones when attaching Cinder volumes.
+
+        Will be `True`, `False`, or `None`.
+        """
+        return self._received['ignore_volume_az']

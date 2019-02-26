@@ -117,11 +117,27 @@ class IntegrationRequest:
                          floating_network_id,
                          lb_method,
                          manage_security_groups):
+        """
+        Set the load-balancer-as-a-service config for this request.
+        """
         self._unit.relation.to_publish.update({
             'subnet_id': subnet_id,
             'floating_network_id': floating_network_id,
             'lb_method': lb_method,
             'manage_security_groups': manage_security_groups,
+        })
+
+    def set_block_storage_config(self,
+                                 bs_version,
+                                 trust_device_path,
+                                 ignore_volume_az):
+        """
+        Set the block storage config for this request.
+        """
+        self._unit.relation.to_publish.update({
+            'bs_version': bs_version,
+            'trust_device_path': trust_device_path,
+            'ignore_volume_az': ignore_volume_az,
         })
 
     @property
