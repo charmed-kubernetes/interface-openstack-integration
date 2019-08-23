@@ -179,6 +179,13 @@ class OpenStackIntegrationRequires(Endpoint):
         return self._received['endpoint_tls_ca'] or None
 
     @property
+    def version(self):
+        """
+        Optional version number for the APIs or None.
+        """
+        return self._received['version'] or None
+
+    @property
     def subnet_id(self):
         """
         Optional subnet ID to work in, or None.
@@ -234,3 +241,14 @@ class OpenStackIntegrationRequires(Endpoint):
         Will be `True`, `False`, or `None`.
         """
         return self._received['ignore_volume_az']
+
+    @property
+    def has_octavia(self):
+        """
+        Whether the underlying OpenStack supports Octavia instead of
+        Neutron-based LBaaS.
+
+        Will either be True, False, or None if it could not be determined for
+        some reason (typically due to connecting to an older integrator charm).
+        """
+        return self._received['has_octavia']

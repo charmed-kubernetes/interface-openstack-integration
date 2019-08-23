@@ -97,7 +97,8 @@ class IntegrationRequest:
                         user_domain_name,
                         project_domain_name,
                         project_name,
-                        endpoint_tls_ca):
+                        endpoint_tls_ca,
+                        version=None):
         """
         Set the credentials for this request.
         """
@@ -110,13 +111,15 @@ class IntegrationRequest:
             'project_domain_name': project_domain_name,
             'project_name': project_name,
             'endpoint_tls_ca': endpoint_tls_ca,
+            'version': version,
         })
 
     def set_lbaas_config(self,
                          subnet_id,
                          floating_network_id,
                          lb_method,
-                         manage_security_groups):
+                         manage_security_groups,
+                         has_octavia=None):
         """
         Set the load-balancer-as-a-service config for this request.
         """
@@ -125,6 +128,7 @@ class IntegrationRequest:
             'floating_network_id': floating_network_id,
             'lb_method': lb_method,
             'manage_security_groups': manage_security_groups,
+            'has_octavia': has_octavia,
         })
 
     def set_block_storage_config(self,
