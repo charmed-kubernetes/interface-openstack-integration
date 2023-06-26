@@ -1,0 +1,12 @@
+README.md
+pyproject.toml
+setup.py
+ops.interface_openstack_integration.egg-info/PKG-INFO
+ops.interface_openstack_integration.egg-info/SOURCES.txt
+ops.interface_openstack_integration.egg-info/dependency_links.txt
+ops.interface_openstack_integration.egg-info/requires.txt
+ops.interface_openstack_integration.egg-info/top_level.txt
+ops.interface_openstack_integration.egg-info/zip-safe
+ops/interface_openstack_integration/__init__.py
+ops/interface_openstack_integration/model.py
+ops/interface_openstack_integration/requires.py
