@@ -18,24 +18,27 @@ from pydantic import BaseModel, Json, SecretStr, validator
 class Data(BaseModel):
     """Databag for information shared over the relation."""
 
+    # Required config
     auth_url: Json[str]
-    bs_version: Json[Optional[str]]
-    endpoint_tls_ca: Json[Optional[str]]
-    floating_network_id: Json[str]
-    has_octavia: Json[bool]
-    ignore_volume_az: Json[Optional[bool]]
-    internal_lb: Json[bool]
-    lb_enabled: Json[bool]
-    lb_method: Json[str]
-    manage_security_groups: Json[bool]
     password: Json[SecretStr]
     project_domain_name: Json[str]
     project_name: Json[str]
     region: Json[str]
-    subnet_id: Json[str]
-    trust_device_path: Json[Optional[bool]]
-    user_domain_name: Json[str]
     username: Json[str]
+    user_domain_name: Json[str]
+
+    # Optional config
+    bs_version: Json[Optional[str]]
+    endpoint_tls_ca: Json[Optional[str]]
+    floating_network_id: Json[Optional[str]]
+    has_octavia: Json[Optional[bool]]
+    ignore_volume_az: Json[Optional[bool]]
+    internal_lb: Json[Optional[bool]]
+    lb_enabled: Json[Optional[bool]]
+    lb_method: Json[Optional[str]]
+    manage_security_groups: Json[Optional[bool]]
+    subnet_id: Json[Optional[str]]
+    trust_device_path: Json[Optional[bool]]
     version: Json[Optional[int]]
 
     @validator("endpoint_tls_ca")
@@ -67,10 +70,14 @@ class Data(BaseModel):
         if not self.lb_enabled:
             config["LoadBalancer"]["enabled"] = "false"
         if self.has_octavia in (True, None):
+            # Newer integrator charm will detect whether underlying OpenStack has
+            # Octavia enabled so we can set this intelligently. If we're still
+            # related to an older integrator, though, default to assuming Octavia
+            # is available.
             config["LoadBalancer"]["use-octavia"] = "true"
         else:
             config["LoadBalancer"]["use-octavia"] = "false"
-            config["LoadBalancer"]["lb-provider"] = "true"
+            config["LoadBalancer"]["lb-provider"] = "haproxy"
         if _s := self.subnet_id:
             config["LoadBalancer"]["subnet-id"] = _s
         if _s := self.floating_network_id:

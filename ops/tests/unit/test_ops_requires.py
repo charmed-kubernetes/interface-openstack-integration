@@ -72,4 +72,4 @@ def test_create_config_ini(requirer, relation_data, tmpdir):
 
         expected = Path("tests/data/cloud_conf.ini").read_text()
         assert requirer.cloud_conf == expected
-        assert requirer.cloud_conf_bytes == base64.b64encode(expected.encode())
+        assert requirer.cloud_conf_b64 == base64.b64encode(expected.encode())

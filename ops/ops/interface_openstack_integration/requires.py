@@ -6,15 +6,13 @@ This only implements the requires side, currently, since the providers
 is still using the Reactive Charm framework self.
 """
 import base64
-import json
 import logging
-import random
-import string
 from typing import Optional
 
 from backports.cached_property import cached_property
-from ops.charm import RelationBrokenEvent
+from ops.charm import CharmBase, RelationBrokenEvent
 from ops.framework import Object
+from ops.model import Relation
 from pydantic import ValidationError
 
 from .model import Data
@@ -25,9 +23,12 @@ log = logging.getLogger(__name__)
 class OpenstackIntegrationRequirer(Object):
     """Requires side of openstack relation."""
 
-    def __init__(self, charm, endpoint="openstack"):
+    def __init__(
+        self, charm: CharmBase, endpoint: str = "openstack", relation_id: Optional[int] = None
+    ):
         super().__init__(charm, f"relation-{endpoint}")
         self.endpoint = endpoint
+        self.relation_id = relation_id
         events = charm.on[endpoint]
         self._unit_name = self.model.unit.name.replace("/", "_")
         self.framework.observe(events.relation_joined, self._joined)
@@ -37,9 +38,9 @@ class OpenstackIntegrationRequirer(Object):
         to_publish["charm"] = self.model.app.name
 
     @cached_property
-    def relation(self):
+    def relation(self) -> Optional[Relation]:
         """The relation to the integrator, or None."""
-        return self.model.get_relation(self.endpoint)
+        return self.model.get_relation(self.endpoint, relation_id=self.relation_id)
 
     @cached_property
     def _raw_data(self):
@@ -86,13 +87,6 @@ class OpenstackIntegrationRequirer(Object):
             ]
         )
 
-    def _request(self, keyvals):
-        alphabet = string.ascii_letters + string.digits
-        nonce = "".join(random.choice(alphabet) for _ in range(8))
-        to_publish = self.relation.data[self.model.unit]
-        to_publish.update({k: json.dumps(v) for k, v in keyvals.items()})
-        to_publish["requested"] = nonce
-
     @property
     def cloud_conf(self) -> Optional[str]:
         """Return cloud.conf from integrator relation."""
@@ -101,8 +95,8 @@ class OpenstackIntegrationRequirer(Object):
         return None
 
     @property
-    def cloud_conf_bytes(self) -> Optional[bytes]:
-        """Return cloud.conf from integrator relation."""
+    def cloud_conf_b64(self) -> Optional[bytes]:
+        """Return cloud.conf from integrator relation as base64-encoded bytes."""
         if self.is_ready and (data := self.cloud_conf):
             return base64.b64encode(data.encode())
         return None
