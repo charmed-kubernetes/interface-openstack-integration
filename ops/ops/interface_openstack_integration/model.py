@@ -40,6 +40,7 @@ class Data(BaseModel):
     subnet_id: Json[Optional[str]]
     trust_device_path: Json[Optional[bool]]
     version: Json[Optional[int]]
+    project_id: Json[Optional[str]]
 
     @validator("endpoint_tls_ca")
     def must_be_b64_cert(cls, s: Json[str]):
@@ -63,6 +64,8 @@ class Data(BaseModel):
             "domain-name": self.user_domain_name,
             "tenant-domain-name": self.project_domain_name,
         }
+        if self.project_id:
+            config["Global"]["project-id"] = self.project_id
         if self.endpoint_tls_ca:
             config["Global"]["ca-file"] = "/etc/config/endpoint-ca.cert"
 

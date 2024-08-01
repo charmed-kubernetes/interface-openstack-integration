@@ -113,6 +113,7 @@ class OpenStackIntegrationRequires(Endpoint):
             self.password,
             self.user_domain_name,
             self.project_domain_name,
+            self.project_id,
             self.project_name,
             self.endpoint_tls_ca,
             self.subnet_id,
@@ -164,6 +165,13 @@ class OpenStackIntegrationRequires(Endpoint):
         The project domain name.
         """
         return self._received['project_domain_name']
+
+    @property
+    def project_id(self):
+        """
+        The project id.
+        """
+        return self._received['project_id']
 
     @property
     def project_name(self):
